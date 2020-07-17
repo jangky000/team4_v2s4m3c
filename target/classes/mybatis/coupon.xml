@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "dev.mvc.coupon.CouponDAOInter">
+  <!-- 쿠폰 등록 -->
+  <insert id="create" parameterType="CouponVO">
+    INSERT INTO coupon(couponno, cpimg, cpupimg, cpthumb, cpname, cpdiscount, cpstock, cpcate)
+    VALUES ( coupon_seq.nextval, #{cpimg}, #{cpupimg}, #{cpthumb}, #{cpname}, #{cpdiscount}, #{cpstock}, #{cpcate} )
+  </insert>
+  
+  <!-- 쿠폰 목록 -->
+  <select id="list" resultType="CouponVO">
+    SELECT couponno, cpimg, cpupimg, cpthumb, cpname, cpdiscount, cpstock, cpcate
+    FROM coupon
+    ORDER BY couponno DESC
+  </select>
+  
+  <!-- 쿠폰 총 개수 -->
+  <select id="search_count" resultType="int" >
+     SELECT COUNT(*) as cnt
+     FROM coupon
+  </select>
+  
+  <!-- 쿠폰 페이징 -->
+  <select id="list_by_couponno_paging" resultType="CouponVO">
+    SELECT couponno, cpimg, cpupimg, cpthumb, cpname, cpdiscount, cpstock, cpcate, r
+    FROM (
+               SELECT couponno, cpimg, cpupimg, cpthumb, cpname, cpdiscount, cpstock, cpcate, rownum as r
+               FROM (
+                         SELECT couponno, cpimg, cpupimg, cpthumb, cpname, cpdiscount, cpstock, cpcate
+                         FROM coupon
+                         ORDER BY couponno DESC
+               )          
+    )
+    WHERE <![CDATA[ r >= #{startNum} AND r <= #{endNum} ]]>
+  </select>
+  
+  <!-- 쿠폰 조회 -->
+  <select id="read" resultType="CouponVO" parameterType="int">
+    SELECT couponno, cpimg, cpupimg, cpthumb, cpname, cpdiscount, cpstock, cpcate
+    FROM coupon
+    WHERE couponno = #{couponno}
+  </select>  
+  
+  <!-- 쿠폰 삭제: 삭제 안함 -> 재고가 0이면 발급 불가 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM coupon
+    WHERE couponno = #{couponno}
+  </delete>
+  
+</mapper>

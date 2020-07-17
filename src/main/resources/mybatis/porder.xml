@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "dev.mvc.porder.PorderDAOInter">
+  <!-- 주문 등록 -->
+  <insert id="create" parameterType="PorderVO">
+    <!-- 등록 후 porderVO class의 porderno 칼럼에 PK return -->
+    <selectKey keyProperty="porderno" resultType="int" order="BEFORE">
+      select porder_seq.nextval from dual
+    </selectKey>
+    INSERT INTO porder(porderno, memno, rdate, item_price_sum, item_discount_sum, coupon_discount_sum, delivery_fee, payment_price, porder_status, porder_zip_code, porder_address, porder_delivery_request)
+    VALUES(#{porderno}, #{memno}, sysdate, #{item_price_sum}, #{item_discount_sum}, #{coupon_discount_sum}, #{delivery_fee}, #{payment_price}, #{porder_status}, #{porder_zip_code}, #{porder_address}, #{porder_delivery_request})
+  </insert>
+  
+  <!-- 주문 목록 -->
+  <select id="list" resultType="PorderVO">
+    SELECT porderno, memno, rdate, item_price_sum, item_discount_sum, coupon_discount_sum, delivery_fee, payment_price, porder_status, porder_zip_code, porder_address, porder_delivery_request
+    FROM porder
+    ORDER BY porderno DESC
+  </select>
+  
+  <resultMap type="Porder_detail_itemVO" id="Porder_detail_itemVO_Map">
+      <!-- 필드 안에 VO가 선언된 경우 property: VO필드명-->
+      <association property="porderVO" javaType="PorderVO">
+        <!-- result: 칼럼 개수만큼 선언 -->
+        <!-- column: 테이블 칼럼,  property: VO 내의 칼럼 필드명 -->
+        <result column="pporderno" property="porderno"/>
+        <result column="pmemno" property="memno"/>
+        <result column="prdate" property="rdate"/>
+        <result column="ppayment_price" property="payment_price"/>
+        <result column="pporder_status" property="porder_status"/>
+        <result column="pporder_zip_code" property="porder_zip_code"/>
+        <result column="pporder_address" property="porder_address"/>
+        <result column="pporder_delivery_request" property="porder_delivery_request"/>
+      </association>
+      <association property="porder_detailVO" javaType="Porder_detailVO">
+        <result column="pdporder_detailno" property="porder_detailno"/>
+        <result column="pdporderno" property="porderno"/>
+        <result column="pditemno" property="itemno"/>
+        <result column="pdquantity" property="quantity"/>
+        <result column="pdpayment_price" property="payment_price"/>
+        <result column="pdporder_detail_status" property="porder_detail_status"/>
+        <result column="pdtrackingno" property="trackingno"/>
+      </association>
+      <association property="itemVO" javaType="ItemVO">
+        <result column="ititemno" property="itemno"/>
+        <result column="itgrpno" property="grpno"/>
+        <result column="ititem_name" property="item_name"/>
+        <result column="ititem_price" property="item_price"/>
+        <result column="itdiscount_rate" property="discount_rate"/>
+        <result column="ititem_type" property="item_type"/>
+        <result column="ititem_origin" property="item_origin"/>
+        <result column="itthumb" property="thumb"/>
+      </association>
+  </resultMap>
+
+  
+  <!-- 주문 목록 -->
+  <select id="list_join_porder_detail_item" resultMap="Porder_detail_itemVO_Map" parameterType="int">
+    SELECT p.porderno as pporderno, p.memno as pmemno, p.rdate as prdate, p.payment_price as ppayment_price, p.porder_status as pporder_status, p.porder_zip_code as pporder_zip_code, p.porder_address as pporder_address, p.porder_delivery_request as pporder_delivery_request,
+                pd.porder_detailno as pdporder_detailno, pd.porderno as pdporderno, pd.itemno as pditemno, pd.quantity as pdquantity, pd.payment_price as pdpayment_price, pd.porder_detail_status as pdporder_detail_status, pd.trackingno as pdtrackingno,
+                it.itemno as ititemno, it.grpno as itgrpno, it.item_name as ititem_name, it.item_price as ititem_price, it.discount_rate as itdiscount_rate, it.item_type as ititem_type, it.item_origin as ititem_origin, it.thumb as itthumb
+    FROM porder p, porder_detail pd, item it
+    WHERE memno=#{memno} AND p.porderno = pd.porderno AND pd.itemno = it.itemno
+    ORDER BY p.porderno DESC, pd.porder_detailno DESC
+  </select>
+
+  <!-- 주문 조회 -->
+  <select id="read" resultType="PorderVO" parameterType="int">
+    SELECT porderno, memno, rdate, item_price_sum, item_discount_sum, coupon_discount_sum, delivery_fee, payment_price, porder_status, porder_zip_code, porder_address, porder_delivery_request
+    FROM porder
+    WHERE porderno = #{porderno}
+  </select>  
+  
+  <!-- 주문 수정 -->
+    <!-- 환불 -->
+  <update id="update" parameterType="PorderVO">
+    UPDATE porder
+    SET item_price_sum=#{item_price_sum}, item_discount_sum=#{item_discount_sum}, coupon_discount_sum=#{coupon_discount_sum}, delivery_fee=#{delivery_fee}, payment_price=#{payment_price}
+    WHERE porderno = #{porderno}
+  </update>
+  
+  <!-- 주문 삭제-->
+  <delete id="delete" parameterType="int">
+    DELETE FROM porder
+    WHERE porderno = #{porderno}
+  </delete>
+  
+</mapper> 

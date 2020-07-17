@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "dev.mvc.shopping_cart.Shopping_cartDAOInter">
+  <!-- 장바구니 등록 -->
+  <insert id="create" parameterType="Shopping_cartVO">
+    INSERT INTO shopping_cart(shopping_cartno, memno, itemno, quantity)
+    VALUES(shopping_cart_seq.nextval, #{memno}, #{itemno}, #{quantity})
+  </insert>
+  
+  <!-- 장바구니 목록 -->
+  <select id="list" resultType="Shopping_cartVO">
+    SELECT shopping_cartno, memno, itemno, quantity
+    FROM shopping_cart
+    ORDER BY shopping_cartno DESC
+  </select>
+  
+  <select id="list_join" resultType="Shop_item_grpVO" parameterType="int">
+    SELECT ig.grpno, ig.name, 
+            si.itemno, si.item_name, si.item_price, si.discount_rate, si.item_type, si.item_origin, si.upfile, si.thumb,
+             si.shopping_cartno, si.memno, si.quantity
+    FROM itemgrp ig, (SELECT it.itemno, it.grpno, it.item_name, it.item_price, it.discount_rate, it.item_type, it.item_origin, it.upfile, it.thumb,
+                                sc.shopping_cartno, sc.memno, sc.quantity
+                                FROM shopping_cart sc, item it
+                                WHERE sc.itemno = it.itemno AND sc.memno = #{memno}
+                                ORDER BY shopping_cartno DESC) si
+    WHERE ig.grpno = si.grpno
+  </select>
+  
+  
+  
+  <!-- 결제 시 선택된 쇼핑카트no 조회 -->
+  <!-- 동적 SQL -->
+  <!-- https://m.blog.naver.com/yysvip/220178619415 -->
+<!--   <select id="list_by_selected_shopping_cartno" resultType="Shopping_cartVO">
+    SELECT shopping_cartno, memno, itemno, quantity
+    FROM shopping_cart
+    WHERE 
+    <foreach collection="array" item="shopping_cartno" open="" close="" separator=" OR ">
+      shopping_cartno = #{shopping_cartno}
+    </foreach>
+    ORDER BY shopping_cartno DESC
+  </select> -->
+  
+  <select id="list_join_by_selected_shopping_cartno" resultType="Shop_item_grpVO" parameterType="HashMap">
+    SELECT ig.grpno, ig.name, 
+            si.itemno, si.item_name, si.item_price, si.discount_rate, si.item_type, si.item_origin, si.upfile, si.thumb,
+             si.shopping_cartno, si.memno, si.quantity
+    FROM itemgrp ig, (SELECT it.itemno, it.grpno, it.item_name, it.item_price, it.discount_rate, it.item_type, it.item_origin, it.upfile, it.thumb,
+                                sc.shopping_cartno, sc.memno, sc.quantity
+                                FROM (
+                                    SELECT * 
+                                    FROM shopping_cart 
+                                    WHERE 
+                                    <foreach collection="shopping_cartInt" item="shopping_cartno" open="" close="" separator=" OR ">
+                                      shopping_cartno = #{shopping_cartno}
+                                    </foreach>
+                                    ) sc, item it
+                                WHERE sc.itemno = it.itemno AND sc.memno = #{memno}
+                                ORDER BY shopping_cartno DESC) si
+    WHERE ig.grpno = si.grpno
+  </select>
+  
+  <!-- 장바구니 목록 페이징 -->
+  
+  <!-- 장바구니 조회 -->
+  <select id="read" resultType="Shopping_cartVO" parameterType="int">
+    SELECT shopping_cartno, memno, itemno, quantity
+    FROM shopping_cart
+    WHERE shopping_cartno = #{shopping_cartno}
+  </select>  
+
+  <!-- 장바구니 중복체크 -->
+  <select id="shopping_cart_check" resultType="String" parameterType="HashMap">
+    SELECT shopping_cartno
+    FROM shopping_cart
+    WHERE memno = #{memno} AND itemno = #{itemno}
+  </select>
+
+  <!-- 장바구니 상품 개수 1 증가 -->
+  <update id="quantity_up" parameterType="int">
+    UPDATE shopping_cart
+    SET quantity = quantity + 1
+    WHERE shopping_cartno = #{shopping_cartno}
+  </update>
+
+  <!-- 장바구니 상품 특정 개수 증가 -->
+  <update id="quantity_up_num" parameterType="HashMap">
+    UPDATE shopping_cart
+    SET quantity = quantity + #{quantity_up_num}
+    WHERE shopping_cartno = #{shopping_cartno}
+  </update>
+  
+  <!-- 장바구니 상품 개수 감소 -->
+  <update id="quantity_down" parameterType="int">
+    UPDATE shopping_cart
+    SET quantity=quantity - 1
+    WHERE shopping_cartno = #{shopping_cartno}
+  </update>
+  
+  <!-- 장바구니 삭제-->
+  <delete id="delete" parameterType="int">
+    DELETE FROM shopping_cart
+    WHERE shopping_cartno = #{shopping_cartno}
+  </delete>
+  
+  <!-- 동적으로 장바구니 삭제 -->
+  <delete id="delete_list">
+    DELETE FROM shopping_cart
+    WHERE 
+    <foreach collection="array" item="shopping_cartno" open="" close="" separator=" OR ">
+      shopping_cartno = #{shopping_cartno}
+    </foreach>
+  </delete>
+  
+  
+</mapper> 

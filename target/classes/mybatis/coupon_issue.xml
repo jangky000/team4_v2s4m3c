@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "dev.mvc.coupon_issue.Coupon_issueDAOInter">
+  <!-- 쿠폰 발급 등록: 발급 기준일 한달 이내 사용 -->
+  <insert id="create" parameterType="Coupon_issueVO">
+    INSERT INTO coupon_issue(coupon_issueno, memno, couponno, cpcnt, cpissue, cpexpired, cpstatus)
+    VALUES(coupon_issue_seq.nextval, ${memno}, ${couponno}, ${cpcnt}, sysdate, add_months(sysdate,1), ${cpstatus})
+  </insert>
+  
+  <!-- 쿠폰 발급 목록 -->
+  <select id="list" resultType="Coupon_issueVO">
+    SELECT coupon_issueno, memno, couponno, cpcnt, cpissue, cpexpired, cpstatus
+    FROM coupon_issue
+    ORDER BY coupon_issueno DESC
+  </select>
+  
+  <!-- 쿠폰 발행 목록 총 수 -->
+  <select id="search_count" resultType="int" >
+     SELECT COUNT(*) as cnt
+     FROM coupon_issue
+  </select>
+  
+  <!-- 쿠폰 발행 페이징 -->
+  <select id="list_by_coupon_issueno_paging" resultType="Coupon_issueVO">
+    SELECT coupon_issueno, memno, couponno, cpcnt, cpissue, cpexpired, cpstatus, r
+    FROM (
+               SELECT coupon_issueno, memno, couponno, cpcnt, cpissue, cpexpired, cpstatus, rownum as r
+               FROM (
+                         SELECT coupon_issueno, memno, couponno, cpcnt, cpissue, cpexpired, cpstatus
+                         FROM coupon_issue
+                         ORDER BY coupon_issueno DESC
+               )          
+    )
+    WHERE <![CDATA[ r >= #{startNum} AND r <= #{endNum} ]]>
+  </select>
+  
+  <!-- 결제 시 사용 가능한 쿠폰 목록 -->
+  <resultMap type="Coupon_issue_joinVO" id="Coupon_issue_joinVO_Map">
+      <!-- 필드 안에 VO가 선언된 경우 property: VO필드명-->
+      <association property="couponVO" javaType="CouponVO">
+        <result column="ccouponno" property="couponno"/>
+        <result column="ccpthumb" property="cpthumb"/>
+        <result column="ccpname" property="cpname"/>
+        <result column="ccpdiscount" property="cpdiscount"/>
+        <result column="ccpcate" property="cpcate"/>
+      </association>
+      <association property="coupon_issueVO" javaType="Coupon_issueVO">
+        <result column="cicoupon_issueno" property="coupon_issueno"/>
+        <result column="cimemno" property="memno"/>
+        <result column="cicouponno" property="couponno"/>
+        <result column="cicpcnt" property="cpcnt"/>
+        <result column="cicpissue" property="cpissue"/>
+        <result column="cicpexpired" property="cpexpired"/>
+        <result column="cicpstatus" property="cpstatus"/>
+      </association>
+  </resultMap>
+  
+  <select id="list_by_memno_join_coupon_not_used" resultMap="Coupon_issue_joinVO_Map" parameterType="int">
+    SELECT c.couponno as ccouponno, c.cpthumb as ccpthumb, c.cpname as ccpname, c.cpdiscount as ccpdiscount, c.cpcate as ccpcate,
+            ci.coupon_issueno as cicoupon_issueno, ci.memno as cimemno, ci.couponno as cicouponno, ci.cpcnt as cicpcnt, ci.cpissue as cicpissue, ci.cpexpired as cicpexpired, ci.cpstatus as cicpstatus
+    FROM coupon c, coupon_issue ci
+    WHERE memno = #{memno} AND ci.couponno = c.couponno AND ci.cpstatus = 'I' AND ci.cpexpired >= sysdate
+    ORDER BY cpexpired ASC
+  </select>  
+  
+  <!-- 쿠폰 발급 조회 -->
+  <select id="read" resultType="Coupon_issueVO" parameterType="int">
+    SELECT coupon_issueno, memno, couponno, cpcnt, cpissue, cpexpired, cpstatus
+    FROM coupon_issue
+    WHERE coupon_issueno=#{coupon_issueno}
+  </select>  
+  
+  <!-- 쿠폰 발행 상태 변경 -->
+  <update id="update_list_status" parameterType="HashMap">
+    UPDATE coupon_issue 
+    SET cpstatus=#{cpstatus}
+    WHERE 
+      <foreach collection="coupon_issueInt" item="coupon_issueno" open="" close="" separator=" OR ">
+        coupon_issueno = #{coupon_issueno}
+      </foreach>
+  </update>
+  
+  <!-- 쿠폰 발급 삭제: 삭제 사용 안함-->
+  <delete id="delete" parameterType="int">
+    DELETE FROM coupon_issue
+    WHERE coupon_issueno = #{coupon_issueno}
+  </delete>
+  
+</mapper> 
