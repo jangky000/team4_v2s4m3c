@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ 
+ <mapper namespace="dev.mvc.qna.QnaDAOInter"> 
+ 
+  <!-- 등록 -->
+  <insert id="create" parameterType="QnaVO">
+     INSERT INTO qna(qnano, qnacate,qna_title, qna_content, qna_name, qna_pass,upfile,thumb,fsize,qna_date)
+     VALUES(qna_seq.nextval, #{qnacate},#{qna_title},#{qna_content},#{qna_name}, #{qna_pass},#{upfile},#{thumb},#{fsize} ,sysdate)
+ </insert>
+ 
+   <!-- 목록 -->
+  <select id="list_all" resultType="QnaVO" parameterType="int">
+  SELECT qnano,qnacate,qna_title, qna_content, qna_name, qna_date
+  FROM qna
+  ORDER BY qnano ASC   
+  </select>
+ 
+   <!-- 조회 -->
+  <select id="read" resultType="QnaVO" parameterType="int">
+    SELECT qnano, qnacate,qna_title, qna_content,qna_name,upfile,thumb,fsize,qna_date
+    FROM qna
+    WHERE qnano=#{qnano}
+  </select>
+ 
+ <!-- 수정이  -->
+ <update id="update" parameterType="QnaVO">
+ UPDATE qna 
+ SET qna_title =#{qna_title} ,qna_content=#{qna_content},
+  qna_name=#{qna_name}, qna_pass =#{qna_pass} 
+ WHERE qnano =#{qnano}
+ </update>
+  
+  <!-- 패스워드 검사 -->
+ <select id="passwd_check" parameterType="HashMap" resultType="int">
+    SELECT COUNT(*) as passwd_cnt
+    FROM qna
+    WHERE qnano=#{qnano} AND qna_pass=#{qna_pass}
+ </select>
+ 
+ <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM qna
+    WHERE qnano=#{qnano}
+  </delete>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </mapper>

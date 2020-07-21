@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- dev.mvc.mem.MemDAOInter 패키지에 등록된 interface 명시,
+      패키지명과 인터페이스명은 실제로 존재해야함,
+      Spring이 내부적으로 자동으로 interface를 구현해줌. -->
+<mapper namespace="dev.mvc.mem.MemDAOInter"> 
+  <select id="checkID" resultType="int" parameterType="String">
+    SELECT COUNT(mem_id) as cnt
+    FROM mem
+    WHERE mem_id=#{mem_id}
+  </select>
+  
+  <insert id="create" parameterType="MemVO">
+    INSERT INTO mem(memno, mem_img, mem_id, mem_pw, mem_name, mem_yy, mem_mm, mem_dd, mem_telecom, mem_phone, mem_email, signdate)
+    VALUES (mem_seq.nextval, null, #{mem_id}, #{mem_pw}, #{mem_name}, #{mem_yy}, #{mem_mm}, #{mem_dd}, #{mem_telecom}, #{mem_phone}, #{mem_email}, sysdate)
+  </insert>
+  
+  <select id="list" resultType="MemVO">
+    SELECT memno, mem_img ,mem_id, mem_pw, mem_name, mem_yy, mem_mm, mem_dd, mem_telecom, mem_phone, mem_email, signdate, memlvno
+    FROM mem
+    ORDER BY memlvno ASC, memno ASC
+  </select>
+ 
+  <delete id="delete" parameterType="int">
+    DELETE FROM mem
+    WHERE memno = #{memno}
+  </delete>
+
+  <select id="readById" resultType="MemVO" parameterType="String">
+    SELECT memno, mem_img ,mem_id, mem_pw, mem_name, mem_yy, mem_mm, mem_dd, mem_telecom, mem_phone, mem_email, signdate, memlvno
+    FROM mem
+    WHERE mem_id = #{mem_id}
+  </select>
+  
+  <select id="read" resultType="MemVO" parameterType="int">
+    SELECT memno, mem_img ,mem_id, mem_pw, mem_name, mem_yy, mem_mm, mem_dd, mem_telecom, mem_phone, mem_email, signdate, memlvno
+    FROM mem
+    WHERE memno = #{memno}
+  </select>
+  
+  <select id="login" parameterType="HashMap" resultType="int">
+	SELECT COUNT(memno) as cnt
+	FROM mem
+	WHERE mem_pw=#{mem_pw} AND mem_id=#{mem_id}
+  </select>
+
+  <select id="passwd_check" parameterType="HashMap" resultType="int">
+    SELECT COUNT(memno) as cnt
+    FROM mem
+    WHERE memno=#{memno} AND mem_pw=#{mem_pw}
+  </select>
+  
+  <update id="passwd_update" parameterType="HashMap">
+    UPDATE mem
+    SET mem_pw=#{mem_pw}
+    WHERE memno=#{memno}
+  </update>
+
+  <update id="contact_update" parameterType="MemVO">
+    UPDATE mem
+    SET mem_email=#{mem_email}, mem_telecom=#{mem_telecom}, mem_phone=#{mem_phone}
+    WHERE memno=#{memno}
+  </update>
+  
+  <update id="mem_img_update" parameterType="MemVO">
+    UPDATE mem
+    SET mem_img=#{mem_img}
+    WHERE memno=#{memno}
+  </update>
+  
+</mapper>

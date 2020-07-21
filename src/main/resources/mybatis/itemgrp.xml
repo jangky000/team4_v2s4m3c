@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- dev.mvc.categrp.CategrpDAOInter 패키지에 등록된 interface 명시,
+      패키지명과 인터페이스명은 실제로 존재해야함,
+      Spring이 내부적으로 자동으로 interface를 구현해줌. -->
+<mapper namespace="dev.mvc.itemgrp.ItemgrpDAOInter"> 
+
+  <insert id="create" parameterType="ItemgrpVO">
+    INSERT INTO itemgrp(grpno, name, visibleno, visible, rdate)
+    VALUES(grp_seq.nextval, #{name}, #{visibleno}, #{visible}, sysdate)
+  </insert>
+  
+  <select id="list"  resultType="ItemgrpVO">
+    SELECT grpno, name, visibleno, visible, rdate
+    FROM itemgrp
+    ORDER BY grpno ASC
+  </select>
+  
+  <select id="read" resultType="ItemgrpVO" parameterType="int">
+    SELECT  grpno, name, visibleno, visible, rdate
+    FROM itemgrp
+    WHERE grpno=#{grpno}
+  </select>
+  
+  <update id="update" parameterType="ItemgrpVO">
+    UPDATE itemgrp
+    SET name=#{name}, visibleno=#{visibleno}, visible=#{visible}
+    WHERE grpno = #{grpno}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+    DELETE FROM itemgrp
+    WHERE grpno=#{grpno}
+  </delete>
+  
+   <!-- 우선순위 상향 up 10 ▷ 1 -->
+  <update id="update_seqno_up" parameterType="int">
+    UPDATE itemgrp
+    SET visibleno = visibleno - 1
+    WHERE grpno=#{grpno}
+  </update>
+
+  <!-- 우선순위 하향 down 1 ▷ 10 --> 
+  <update id="update_seqno_down" parameterType="int">
+    UPDATE itemgrp
+    SET visibleno = visibleno + 1
+    WHERE grpno=#{grpno}
+  </update>
+
+  <!-- 수정, id: update_visible, 입력: CategrpVO, 리턴: int -->
+  <update id="update_visible" parameterType="ItemgrpVO">
+    UPDATE itemgrp
+    SET visible=#{visible}
+    WHERE grpno = #{grpno}
+  </update>
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.memlv.MemlvDAOInter">
+
+  <insert id="create" parameterType="MemlvVO">
+    INSERT INTO memlv(memlvno, memlv_name, memlv_img, memlv_condition ,memlv_benefit)
+    VALUES(memlv_seq.nextval, #{memlv_name}, null, #{memlv_condition}, #{memlv_benefit})
+  </insert>
+  
+  <select id="list" resultType="MemlvVO">
+    SELECT memlvno, memlv_name, memlv_img, memlv_condition ,memlv_benefit
+    FROM memlv
+    ORDER BY memlvno ASC
+  </select>
+    
+  <select id="read" resultType="MemlvVO" parameterType="int">
+    SELECT memlvno, memlv_name, memlv_img, memlv_condition ,memlv_benefit
+    FROM memlv
+    WHERE memlvno=#{memlvno}
+  </select>
+  
+  <update id="update" parameterType="MemlvVO">
+    UPDATE memlv
+    SET memlv_name=#{memlv_name}, memlv_condition=#{memlv_condition} , memlv_benefit=#{memlv_benefit}
+    WHERE memlvno = #{memlvno}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+    DELETE FROM memlv
+    WHERE memlvno=#{memlvno}
+  </delete>
+
+  <update id="memlv_img_update" parameterType="MemVO">
+    UPDATE memlv
+    SET memlv_img=#{memlv_img}
+    WHERE memlvno=#{memlvno}
+  </update>
+
+</mapper>

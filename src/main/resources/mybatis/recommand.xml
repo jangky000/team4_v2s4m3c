@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.recommand.RecomDAOInter"> 
+  <!--  생성 C -->
+  <insert id="create" parameterType="RecomVO">
+    <!-- 등록후 RecomVO class의 contentsno 컬럼에 PK return   -->
+    <selectKey keyProperty="recomno" resultType="int" order="BEFORE">
+      SELECT recom_seq.nextval FROM dual
+    </selectKey>
+    INSERT INTO recommand(recomno, itemno, grpno, testresult_type,
+                           testresult_recom, recom_price)
+    VALUES(recom_seq.nextval, #{itemno}, #{grpno}, #{testresult_type}, 
+                  #{testresult_recom}, #{recom_price})
+  </insert>
+  
+  <!-- 리스트 -->
+  <select id="list" resultType="RecomVO">
+    SELECT recomno, itemno, grpno, testresult_type, testresult_recom, recom_price
+    FROM recommand
+    ORDER BY recomno DESC
+  </select>
+  
+ <!-- 조회 R -->
+ <select id="read" resultType="RecomVO" parameterType="int">
+   SELECT  recomno, itemno, grpno, testresult_type, testresult_recom, recom_price
+   FROM recommand
+   WHERE recomno = #{recomno }
+ </select>
+
+  <!-- 수정 U -->
+  <update id="update" parameterType="ItemVO">
+    UPDATE recommand
+    SET testresult_type=#{testresult_type}, testresult_recom=#{testresult_recom}, recom_price=#{recom_price}
+    WHERE recomno=#{recomno}
+  </update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

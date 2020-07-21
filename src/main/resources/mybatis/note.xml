@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+
+<mapper namespace="dev.mvc.note.NoteDAOInter"> 
+ 
+  <!-- 등록 -->
+  <insert id="create" parameterType="NoteVO">
+ INSERT INTO note(noteno, notecate , note_title, note_content, note_seqno,note_manager ,note_pass, note_date)
+ VALUES(note_seq.nextval,  #{notecate},#{note_title},#{note_content}, #{note_seqno},#{note_manager},#{note_pass}, sysdate)
+  </insert>
+  
+  <!-- 목록 -->
+  <select id="list_all" resultType="NoteVO" parameterType="int">
+  SELECT noteno, notecate , note_title, note_content, note_seqno,note_manager,note_date
+  FROM note
+  ORDER BY note_seqno ASC 
+  </select>
+  
+  <!-- 조회 -->
+  <select id="read" resultType="NoteVO" parameterType="int">
+    SELECT noteno, notecate , note_title, note_content, note_seqno, note_manager, note_date
+    FROM note 
+    WHERE noteno=#{noteno}
+  </select>
+  
+  <!-- 수정 -->
+   <update id="update" parameterType="NoteVO">
+   UPDATE note 
+   SET notecate=#{notecate} ,note_title=#{note_title},
+   note_content=#{note_content} , note_seqno=#{note_seqno} ,note_manager=#{note_manager},note_pass=#{note_pass}
+   WHERE noteno=#{noteno}
+   </update>
+   
+     <!-- 패스워드 검사 -->
+  <select id="passwd_check" parameterType="HashMap" resultType="int">
+    SELECT COUNT(*) as passwd_cnt
+    FROM note
+    WHERE noteno=#{noteno} AND note_pass=#{note_pass}
+  </select>
+   
+   <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM note
+    WHERE noteno=#{noteno}
+  </delete>
+  
+</mapper>

@@ -37,8 +37,22 @@
                               dev.mvc.coupon_issue,
                               dev.mvc.coupon_use,
                               dev.mvc.tool,
+                              dev.mvc.delivery,
+                              dev.mvc.memlv,
+                              dev.mvc.mem,
+                              dev.mvc.destination,
+                              dev.mvc.managerlv,
+                              dev.mvc.manager,
+                              dev.mvc.itemgrp,
                               dev.mvc.item,
-                              dev.mvc.delivery
+                              dev.mvc.thumbnail,
+                              dev.mvc.recommand,
+                              dev.mvc.note,
+                              dev.mvc.qna,
+                              dev.mvc.event,
+                              dev.mvc.testq,
+                              dev.mvc.testo,
+                              dev.mvc.reply
                               "/>
     <property name="mapperLocations" value="classpath:mybatis/*.xml" />
   </bean>

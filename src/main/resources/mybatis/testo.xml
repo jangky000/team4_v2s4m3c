@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.testo.TestoDAOInter"> 
+
+  <insert id="create" parameterType="TestoVO">
+    INSERT INTO testo(testono, testqno, testo_content, testo_seqno)
+    VALUES(testo_seq.nextval, #{testqno},#{testo_content},#{testo_seqno})
+  </insert>
+  
+  <select id="list" resultType="TestoVO">
+    SELECT testono, testqno, testo_content,testo_seqno
+    FROM testo
+    ORDER BY testono DESC
+  </select>
+  
+  <select id="list_by_testqno" resultType="TestoVO" parameterType="int">
+    SELECT testono, testqno, testo_content,testo_seqno
+    FROM testo
+    WHERE testqno =#{testqno}
+    ORDER BY testono ASC
+  </select>
+  
+   <select id="read" resultType="TestoVO" parameterType="int">
+      SELECT  testono, testqno, testo_content
+      FROM   testo
+      WHERE testono=#{testono}
+  </select>
+  
+  <update id="update" parameterType="TestoVO">
+      UPDATE testo
+      SET testqno=#{testqno}, testo_content=#{testo_content}, testo_seqno=#{testo_seqno}
+      WHERE testono = #{testono}
+  </update>
+  
+   <delete id="delete" parameterType="int">
+      DELETE FROM testo
+      WHERE testono = #{testono}
+  </delete>
+  
+<!--     출력 순서 상향, 10 ▷ 1 -->
+  <update id="update_seqno_up" parameterType="int">
+    UPDATE testo
+    SET testo_seqno = testo_seqno - 1
+    WHERE testono=#{testono}
+  </update>
+
+<!--   출력순서 하향, 1 ▷ 10  -->
+  <update id="update_seqno_down" parameterType="int">
+    UPDATE testo
+    SET testo_seqno = testo_seqno + 1
+    WHERE testono=#{testono}
+  </update>   
+  
+ <!--JOIN-->
+  <!-- categrp + cate inner join,  1 : 다, 통합 VO -->
+  <select id="list_join" resultType="Testq_Testo_join">
+    SELECT q.testqno as q_testqno, q.testq_content as q_testq_content, q.testq_img as q_testq_img, q.testq_timg as q_testq_timg,
+               o.testono, o.testqno, o.testo_content, o.testo_seqno
+    FROM testq q, testo o
+    WHERE q.testqno=o.testqno
+    ORDER BY q.testqno ASC, o.testo_seqno ASC
+  </select>
+  
+  
+
+  <!-- 참고2 join -->
+
+ <!--  <resultMap type="Testq_Testo_VO_list" id="Testq_Testo_VO_list_Map">
+    <result column="testqno" property="testqno" />
+    <result column="testq_seqno" property="testq_seqno" />
+    <result column="testq_content" property="testq_content" />
+    <result column="testq_img" property="testq_img" />
+    <result column="testq_timg" property="testq_timg" />
+    <result column="testq_tot" property="testq_tot" />
+    <collection property="testo_list" javaType="java.util.List"
+      column="testqno" select="list_seqno_asc_by_testqno">
+    </collection>
+    
+  </resultMap> -->
+  
+<!-- 조회, id: read, 입력: testqno, 리턴: testqnoVO -->
+<!--   <select id="list_by_testqno" resultMap="Testq_Testo_VO_list_Map" >
+    SELECT testqno, testq_seqno,testq_seqno,testq_content,testq_img,testq_timg,testq_tot
+    FROM   testq
+
+  </select> -->
+  
+<!--      출력 순서 오름차순 전체 목록 -->
+
+<!--   <select id="list_seqno_asc_by_testqno" resultType="TestoVO">
+    SELECT  testono,testqno,testo_content,testo_img,testo_seqno
+    FROM testo
+    WHERE testqno=#{testqno}
+    ORDER BY testo_seqno ASC
+  </select>  -->
+  
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

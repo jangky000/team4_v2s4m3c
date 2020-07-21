@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.destination.DestinationDAOInter">
+  
+  <insert id="create" parameterType="DestinationVO">
+    INSERT INTO destination(destinationno, recipient, recipient_phone, postcode, address1 ,address2, memno)
+    VALUES(destination_seq.nextval, #{recipient}, #{recipient_phone}, #{postcode}, #{address1}, #{address2}, #{memno})
+  </insert>
+  
+  <select id="list" resultType="DestinationVO" parameterType="int">
+    SELECT destinationno, recipient, recipient_phone, postcode, address1 ,address2, basic, memno
+    FROM destination
+    WHERE memno=#{memno}
+    ORDER BY destinationno ASC
+  </select>
+    
+  <select id="read" resultType="DestinationVO" parameterType="int">
+    SELECT destinationno, recipient, recipient_phone, postcode, address1 ,address2, memno
+    FROM destination
+    WHERE destinationno=#{destinationno}
+  </select>
+  
+  <update id="update" parameterType="DestinationVO">
+    UPDATE destination
+    SET recipient=#{recipient}, recipient_phone=#{recipient_phone}, postcode=#{postcode}, address1=#{address1}, address2=#{address2}
+    WHERE destinationno=#{destinationno}
+  </update>
+  
+  <update id="update_basic" parameterType="DestinationVO">
+    UPDATE destination
+    SET basic='A'
+    WHERE destinationno = #{destinationno} AND memno =#{memno}
+  </update>
+  
+  <update id="update_basic_other" parameterType="DestinationVO">
+    UPDATE destination
+    SET basic='B'
+    WHERE destinationno != #{destinationno} AND memno =#{memno}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+    DELETE FROM destination
+    WHERE destinationno=#{destinationno}
+  </delete>
+
+</mapper>

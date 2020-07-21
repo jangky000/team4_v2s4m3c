@@ -1,45 +1,124 @@
 package dev.mvc.item;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ItemVO {
-  /*itemno                              NUMBER(10)         NOT NULL            PRIMARY KEY,
-  grpno                                NUMBER(10)         NOT NULL ,
-  item_name                          VARCHAR2(500)    NOT NULL,
-  item_stock                          NUMBER(10)         NOT NULL,
-  item_price                           NUMBER(10)         NOT NULL,
-  item_cost                            NUMBER(10)         NOT NULL,
-  discount_rate                       NUMBER(10)         DEFAULT 0             NOT NULL,
-  item_content                       CLOB                   NOT NULL,
-  item_type                           VARCHAR2(100)     NOT NULL,
-  item_effect                          VARCHAR2(100)    NOT NULL,
-  item_origin                          VARCHAR2(50)      DEFAULT '국내산'      NOT NULL,
-  item_visible                         CHAR(1)               DEFAULT 'Y'           NOT NULL,
-  item_visibleno                      NUMBER(10)         NOT NULL,
-  item_recom                         NUMBER(10)         DEFAULT 0             NOT NULL,
-  item_view                           NUMBER(10)          DEFAULT 0             NOT NULL,
-  item_rdate                          DATE                   NOT NULL,     
-  upfile                                  VARCHAR(100)       NULL,
-  thumb                               VARCHAR(100)       NULL,
-  fsize                                   NUMBER(10)          DEFAULT 0 NULL,  */
-  
+  /** 상품 등록 번호 **/
   private int itemno;
+  /** 메인 카테고리 번호 **/
   private int grpno;
+  /** 상품 이름 **/
   private String item_name;
+  /** 상품 재고 **/
   private int item_stock;
+  /** 상품 정가 **/
   private int item_price;
+  /** 상품 원가 **/
   private int item_cost;
+  /** 할인률 **/
   private int discount_rate;
+  /** 상품 설명 **/
   private String item_content;
+  /** 상품 유형 **/
   private String item_type;
+  /** 상품 피부 효과**/
   private String item_effect;
+  /** 원산지 **/
   private String item_origin;
+  /** 출력 **/
   private String item_visible;
+  /** 출력순서 **/
   private int item_visibleno;
+  /** 추천수 **/
   private int item_recom;
+  /** 조회수 **/
   private int item_view;
-  private String item_rdate;
+  /** 상품 등록 날짜 **/
+  private String item_rdate; 
+  /** 업로드 파일 */
   private String upfile;
+  /** preview 이미지 preview */
   private String thumb;
-  private int fsize;
+  /** 저장된 파일 사이즈 */
+  private long fsize;
+    /** 이미지 MultipartFile */
+  private MultipartFile upfileMF;
+  
+  public ItemVO() {
+    
+  }
+  
+  public String getUpfile() {
+      return upfile;
+    }
+
+    public void setUpfile(String upfile) {
+      this.upfile = upfile;
+    }
+
+    public String getThumb() {
+      return thumb;
+    }
+
+    public void setThumb(String thumb) {
+      this.thumb = thumb;
+    }
+
+    public long getFsize() {
+      return fsize;
+    }
+
+    public void setFsize(long fsize) {
+      this.fsize = fsize;
+    }
+
+    public MultipartFile getUpfileMF() {
+      return upfileMF;
+    }
+
+    public void setUpfileMF(MultipartFile upfileMF) {
+      this.upfileMF = upfileMF;
+    }
+  
+  public ItemVO(int itemno, int grpno, String item_name, int item_stock, int item_price, int item_cost,
+      int discount_rate, String item_content, String item_type, String item_effect, String item_origin,
+      String item_visible, int item_visibleno, int item_recom, int item_view, String item_rdate) {
+    this.itemno = itemno;
+    this.grpno = grpno;
+    this.item_name = item_name;
+    this.item_stock = item_stock;
+    this.item_price = item_price;
+    this.item_cost = item_cost;
+    this.discount_rate = discount_rate;
+    this.item_content = item_content;
+    this.item_type = item_type;
+    this.item_effect = item_effect;
+    this.item_origin = item_origin;
+    this.item_visible = item_visible;
+    this.item_visibleno = item_visibleno;
+    this.item_recom = item_recom;
+    this.item_view = item_view;
+    this.item_rdate = item_rdate;
+  }
+
+  public String getItem_visible() {
+    return item_visible;
+  }
+  public void setItem_visible(String item_visible) {
+    this.item_visible = item_visible;
+  }
+  public int getItem_visibleno() {
+    return item_visibleno;
+  }
+  public void setItem_visibleno(int item_visibleno) {
+    this.item_visibleno = item_visibleno;
+  }
+  public int getItem_recom() {
+    return item_recom;
+  }
+  public void setItem_recom(int item_recom) {
+    this.item_recom = item_recom;
+  }
   public int getItemno() {
     return itemno;
   }
@@ -106,24 +185,6 @@ public class ItemVO {
   public void setItem_origin(String item_origin) {
     this.item_origin = item_origin;
   }
-  public String getItem_visible() {
-    return item_visible;
-  }
-  public void setItem_visible(String item_visible) {
-    this.item_visible = item_visible;
-  }
-  public int getItem_visibleno() {
-    return item_visibleno;
-  }
-  public void setItem_visibleno(int item_visibleno) {
-    this.item_visibleno = item_visibleno;
-  }
-  public int getItem_recom() {
-    return item_recom;
-  }
-  public void setItem_recom(int item_recom) {
-    this.item_recom = item_recom;
-  }
   public int getItem_view() {
     return item_view;
   }
@@ -136,25 +197,6 @@ public class ItemVO {
   public void setItem_rdate(String item_rdate) {
     this.item_rdate = item_rdate;
   }
-  public String getUpfile() {
-    return upfile;
-  }
-  public void setUpfile(String upfile) {
-    this.upfile = upfile;
-  }
-  public String getThumb() {
-    return thumb;
-  }
-  public void setThumb(String thumb) {
-    this.thumb = thumb;
-  }
-  public int getFsize() {
-    return fsize;
-  }
-  public void setFsize(int fsize) {
-    this.fsize = fsize;
-  }
-  
-  
-  
+
+
 }

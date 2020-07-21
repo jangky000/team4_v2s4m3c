@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.event.EventDAOInter"> 
+
+  <insert id="create" parameterType="EventVO">
+    <selectKey keyProperty="eventno" resultType="int" order="BEFORE">
+      SELECT contents_seq.nextval FROM dual
+    </selectKey>
+      INSERT INTO event(eventno, event_title, event_content, event_due, event_seqno, event_visible, event_passwd, event_rdate, event_img, event_timg)
+      VALUES(event_seq.nextval, #{event_title}, #{event_content}, #{event_due},#{event_seqno},#{event_visible},#{event_passwd},sysdate, #{event_img},#{event_timg})
+  </insert>
+  
+  <select id="list" resultType="EventVO">
+    SELECT eventno, event_title, event_content, event_due, event_img,event_timg, event_seqno, event_visible, event_rdate
+    FROM event
+    ORDER BY eventno DESC
+  </select>
+  
+     <select id="search_count" resultType="int" parameterType="HashMap">
+     SELECT COUNT(*) as cnt
+     FROM event
+   </select>    
+   
+  
+   <select id="list_paging" resultType="EventVO" parameterType="HashMap">
+      SELECT  eventno, event_title, event_content, event_due, event_img, event_timg, event_seqno,event_passwd,event_rdate, r
+      FROM (
+                 SELECT  eventno, event_title, event_content, event_due, event_img, event_timg,event_seqno,event_passwd,event_rdate, rownum as r
+                 FROM (
+                           SELECT  eventno, event_title, event_content,event_due, event_img, event_timg, event_seqno,event_passwd,event_rdate
+                           FROM event
+                           ORDER BY eventno DESC
+                 )          
+      )
+      WHERE <![CDATA[ r >= #{startNum} AND r <= #{endNum} ]]>
+</select>
+  
+
+  <select id="read" resultType="EventVO" parameterType="int">
+    SELECT eventno, event_title, event_content, event_img, event_timg, event_due, event_img, event_timg, event_seqno, event_visible, event_passwd, event_rdate
+    FROM event
+    WHERE eventno = #{eventno}
+  </select>
+  
+  <update id="update" parameterType="EventVO">
+    UPDATE  event
+    SET event_title=#{event_title}, event_content=#{event_content}, event_img=#{event_img}, event_timg=#{event_timg},event_due=#{event_due}, event_visible=#{event_visible}
+    WHERE eventno =#{eventno}
+  </update>
+  
+  <!-- 패스워드 검사 -->
+  <select id="passwd_check" parameterType="HashMap" resultType="int">
+    SELECT COUNT(*) as passwd_cnt
+    FROM event
+    WHERE eventno =#{eventno} AND event_passwd=#{event_passwd}
+  </select>
+  
+  <!-- 삭제 -->
+   <delete id="delete" parameterType="int">
+    DELETE FROM event
+    WHERE eventno =#{eventno}
+  </delete>
+  
+  <!--  이미지 파일 등록, 수정, 삭제 -->
+  <update id="jpg" parameterType="HashMap">
+    UPDATE event
+    SET event_img=#{event_img}, event_timg=#{event_timg}
+    WHERE eventno=#{eventno} AND event_passwd=#{event_passwd}
+  </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

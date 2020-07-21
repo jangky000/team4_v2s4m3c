@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.testq.TestqDAOInter"> 
+
+  <insert id="create" parameterType="TestqVO">
+    <selectKey keyProperty="testqno" resultType="int" order="BEFORE">
+        SELECT contents_seq.nextval FROM dual
+    </selectKey>
+     INSERT INTO testq(testqno,testq_seqno,testq_content, testq_img, testq_timg,testq_tot)
+     VALUES(testq_seq.nextval, #{testq_seqno},#{testq_content},#{testq_img},#{testq_timg},0)
+  </insert>
+  
+   <select id="search_count" resultType="int" parameterType="HashMap">
+     SELECT COUNT(*) as cnt
+     FROM event
+  </select>    
+  
+  <select id="list_paging" resultType="TestqVO" parameterType="HashMap">
+      SELECT testqno,testq_seqno,testq_content, testq_img, testq_timg, testq_tot, r
+      FROM (
+                 SELECT testqno,testq_seqno,testq_content, testq_img, testq_timg,testq_tot, rownum as r
+                 FROM (
+                           SELECT testqno,testq_seqno,testq_content, testq_img, testq_timg,testq_tot
+                           FROM testq
+                           ORDER BY testqno DESC
+                 )          
+      )
+      WHERE <![CDATA[ r >= #{startNum} AND r <= #{endNum} ]]>
+</select>
+
+  <select id="read" resultType="TestqVO" parameterType="int">
+      SELECT testqno,testq_seqno,testq_content, testq_img, testq_tot
+      FROM testq
+      WHERE testqno=#{testqno}
+  </select>
+  
+  <update id="update" parameterType="TestqVO">
+      UPDATE  testq
+      SET testq_seqno=#{testq_seqno}, testq_content=#{testq_content}, testq_img=#{testq_img},testq_timg=#{testq_timg}
+      WHERE  testqno=#{testqno}
+  </update>
+  
+   <delete id="delete" parameterType="int">
+    DELETE FROM testq
+    WHERE testqno =#{testqno}
+  </delete>
+  
+  <update id="jpg" parameterType="HashMap">
+    UPDATE testq
+    SET testq_img=#{testq_img}, testq_timg=#{testq_timg}
+    WHERE testqno=#{testqno} 
+  </update>
+  
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

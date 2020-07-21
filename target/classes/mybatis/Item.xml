@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.item.ItemDAOInter"> 
+  <!-- 삽입 C-->
+  <insert id="create" parameterType="ItemVO">
+  INSERT INTO item(itemno, grpno, item_name, item_stock, item_price, item_cost,
+                          discount_rate, item_content, item_type, item_effect, item_origin, 
+                          item_visible, item_visibleno, item_recom, item_view, item_rdate,
+                          upfile, thumb, fsize)
+  VALUES(item_seq.nextval, #{grpno}, #{item_name}, #{item_stock}, #{item_price}, #{item_cost},
+                          #{discount_rate},#{item_content},#{item_type}, #{item_effect}, #{item_origin},
+                          #{item_visible}, #{item_visibleno}, #{item_recom}, 0, sysdate,  #{upfile}, #{thumb}, #{fsize})
+  </insert>
+  
+  <!-- 출력 순서 목록 -->
+  <select id="list" resultType="ItemVO" parameterType="int">
+    SELECT itemno, grpno, item_name, item_stock, item_price, item_cost,
+             discount_rate, item_content, item_type, item_effect, item_origin, 
+             item_visible, item_visibleno, item_recom, item_view, item_rdate,
+             upfile, thumb, fsize
+    FROM item
+    ORDER BY itemno DESC
+  </select>
+  
+  <!-- itemgrp + item inner join,  1 : 다, 통합 VO -->
+  <select id="list_join" resultType="Itemgrp_Item_join" parameterType="int">
+    SELECT g.grpno as g_grpno, g.name as g_name,
+              i.itemno, i.grpno, i.item_name, i.item_stock, i.item_price, i.item_cost, i.discount_rate, i.item_content,
+              i.item_type, i.item_effect, i.item_origin, i.item_visible, i.item_visibleno, i.item_recom, i.item_view, i.item_rdate, i.item_rdate, 
+              i.upfile, i.thumb, i.fsize
+    FROM  item i, itemgrp g
+    WHERE i.grpno = g.grpno  AND i.grpno=#{grpno}
+    ORDER BY itemno ASC
+  </select>
+  
+  <!-- grpno 별 item 목록: itemgrp + item inner join,  1 : 다, 통합 VO -->
+  <select id="list_join_by_grpno" resultType="Itemgrp_Item_join" parameterType="int">
+    SELECT g.grpno as g_grpno, g.name as g_name,
+              i.itemno, i.grpno, i.item_name, i.item_stock, i.item_price, i.item_cost, i.discount_rate, i.item_content,
+              i.item_type, i.item_effect, i.item_origin, i.item_visible, i.item_visibleno, i.item_recom, i.item_view, i.item_rdate, i.item_rdate, 
+              i.upfile, i.thumb, i.fsize
+    FROM  item i, itemgrp g
+    WHERE i.grpno = g.grpno  AND i.grpno=#{grpno}
+    ORDER BY itemno ASC
+  </select>
+  
+  <!-- 실제의 컬럼을 어떤 자바 변수와 대응 시킬것인지 선언, 
+        일반적으로 DBMS 컬럼명과 VO class 변수명이 다를때 사용 -->
+  <resultMap type="Itemgrp_Item_VO" id="Itemgrp_Item_VO_Map">
+    <association property="itemgrpVO" javaType="ItemgrpVO">
+      <result column="g_grpno" property="grpno" />
+      <result column="g_name" property="name" />
+    </association>
+    <association property="itemVO" javaType="ItemVO">
+      <result column="i_itemno" property="itemno" />
+      <result column="i_grpno" property="grpno" />
+      <result column="i_name" property="item_name" />
+      <result column="i_stock" property="item_stock" />
+      <result column="i_price" property="item_price" />
+      <result column="i_cost" property="item_cost" />  
+      <result column="i_discount_rate" property="discount_rate" />
+      <result column="i_content" property="item_content" />
+      <result column="i_type" property="item_type" />
+      <result column="i_effect" property="item_effect" />
+      <result column="i_origin" property="item_origin" />
+      <result column="i_item_visible" property="item_visible" />    
+     <result column="i_visibleno" property="item_visibleno" />
+      <result column="i_recom" property="item_recom" />
+      <result column="i_view" property="item_view" />
+      <result column="i_rdate" property="item_rdate" />
+      <result column="upfile" property="upfile" />
+      <result column="thumb" property="thumb" />         
+      <result column="fsize" property="fsize" /> 
+    </association>
+  </resultMap>
+  
+  <!-- 13) itemgrp + item inner join,  1 : 다 -->
+  <select id="list_all" resultMap="Itemgrp_Item_VO_Map">
+    SELECT  g.grpno as g_grpno, g.name as g_name,
+              i.itemno as i_itemno, i.grpno as i_grpno, i.item_name as i_name,
+              i.item_stock as i_stock, i.item_price as i_price, i.item_cost as i_cost, 
+              i.discount_rate as i_discount_rate,  i.item_content as i_content, 
+              i.item_type as i_type, i.item_effect as i_effect,
+              i.item_origin as i_origin,  i.item_visible as i_item_visible, i.item_visibleno as i_visibleno,
+              i.item_recom as i_recom, i.item_view as i_view, i.item_rdate as i_rdate, 
+              i.upfile as upfile, i.thumb as thumb, i.fsize as fsize
+    FROM item i, itemgrp g
+    WHERE i.grpno = g.grpno
+    ORDER BY i.grpno DESC, i.itemno ASC
+  </select> 
+  
+   <!-- 실제의 컬럼을 어떤 자바 변수와 대응 시킬것인지 선언, 
+        일반적으로 DBMS 컬럼명과 VO class 변수명이 다를때 사용 -->
+  <resultMap type="Itemgrp_Item_VO_list" id="Itemgrp_Item_VO_list_Map">
+    <result column="grpno" property="grpno" />
+    <result column="name" property="name" />
+    <result column="visibleno" property="visibleno" />
+    <result column="visible" property="visible" />
+    <result column="rdate" property="rdate" />
+    <collection property="item_list" javaType="java.util.List"
+      column="grpno" select="list_visibleno_asc_by_grpno">
+    </collection>
+    
+  </resultMap>
+
+  <!-- 참고 2) 조회, id: read, 입력: grpno, 리턴: ItemgrpVO -->
+  <select id="list_by_grpno" resultMap="Itemgrp_Item_VO_list_Map" 
+                                   parameterType="int">
+    SELECT grpno, name, visibleno, visible, rdate
+    FROM itemgrp
+    WHERE grpno = #{grpno}
+  </select>
+
+  <!-- 출력 순서 오름차순 전체 목록 -->
+  <select id="list_visibleno_asc_by_grpno" resultType="ItemVO" parameterType="int">
+    SELECT itemno, grpno, item_name, item_stock, item_price, item_cost, 
+             discount_rate, item_content, item_type, item_effect,item_origin,
+             item_visible, item_visibleno, item_recom, item_view, item_rdate
+    FROM item
+    WHERE grpno = #{grpno}
+    ORDER BY item_visibleno ASC
+  </select>
+  
+  <!--  총 레코드 갯수 -->
+  <select id="total_count" resultType="int">
+    SELECT COUNT(*) as cnt
+    FROM item 
+  </select>
+  
+   <!-- 카테고리별 검색 레코드 갯수 -->
+   <select id="search_count" resultType="int" parameterType="HashMap">
+     SELECT COUNT(*) as cnt
+     FROM contents
+     WHERE cateno=#{cateno}
+   </select>  
+  
+  <!-- 페이징 된  1 : 多 리스트  -->
+  <select id="list_by_grpno_paging" resultType="Itemgrp_Item_join" parameterType="HashMap">
+    SELECT  g_grpno, g_name,
+              itemno, grpno, item_name, item_stock, item_price, item_cost, discount_rate, item_content,
+              item_type, item_effect, item_origin, item_visible, item_visibleno, item_recom, item_view, item_rdate,
+              upfile, thumb, fsize, r
+    FROM(
+                SELECT  g_grpno, g_name,
+                          itemno, grpno, item_name, item_stock, item_price, item_cost, discount_rate, item_content,
+                          item_type, item_effect, item_origin, item_visible, item_visibleno, item_recom, item_view, item_rdate,
+                          upfile, thumb, fsize, rownum as r
+                FROM(
+                            SELECT g.grpno as g_grpno, g.name as g_name,
+                                      i.itemno, i.grpno, i.item_name, i.item_stock, i.item_price, i.item_cost, i.discount_rate, i.item_content,
+                                      i.item_type, i.item_effect, i.item_origin, i.item_visible, i.item_visibleno, i.item_recom, i.item_view, i.item_rdate,
+                                      i.upfile, i.thumb, i.fsize
+                            FROM  item i, itemgrp g
+                            WHERE i.grpno = g.grpno  AND i.grpno= #{grpno }
+                            ORDER BY i.grpno DESC, i.itemno ASC)
+    ) WHERE <![CDATA[ r >= #{startNum} AND r <= #{endNum} ]]>
+  </select>
+  
+  <!-- 조회 R -->
+  <select id="read" resultType="ItemVO" parameterType="int">
+    SELECT itemno, grpno, item_name, item_stock, item_price, item_cost,
+             discount_rate, item_content, item_type, item_effect, item_origin, 
+             item_visible, item_visibleno, item_recom, item_view, item_rdate,
+             upfile, thumb, fsize
+    FROM item
+    WHERE itemno=#{itemno}
+  </select>  
+  
+  <!--글 수정 U -->
+  <update id="update" parameterType="ItemVO">
+    UPDATE item
+    SET  item_name=#{item_name}, item_stock=#{item_stock}, item_price=#{item_name},
+           item_cost=#{item_name}, discount_rate=#{item_name}, item_content=#{item_name}, 
+           item_type=#{item_name}, item_effect=#{item_name}, item_origin=#{item_name}, 
+           item_visible=#{item_name}
+    WHERE itemno=#{itemno}
+  </update>
+  
+    <!-- 사진 수정 U -->
+  <update id="update_image" parameterType="ItemVO">
+    UPDATE item
+    SET upfile=#{upfile}, thumb=#{thumb}, fsize=#{fsize}
+    WHERE itemno = #{itemno}
+  </update>
+  
+  <!-- 삭제 D -->
+  <delete id="delete"  parameterType="int">
+    DELETE FROM item
+    WHERE itemno = #{itemno}  
+  </delete> 
+  
+  <!-- 우선순위 상향 up 10 ▷ 1 -->
+  <update id="update_seqno_up" parameterType="int">
+    UPDATE item
+    SET item_visibleno = item_visibleno - 1
+    WHERE itemno=#{itemno}
+  </update>
+
+  <!-- 우선순위 하향 down 1 ▷ 10 --> 
+  <update id="update_seqno_down" parameterType="int">
+    UPDATE item
+    SET item_visibleno = item_visibleno + 1
+    WHERE itemno=#{itemno}
+  </update>
+
+  <!-- 수정, id: update_visible, 입력: ItemVO, 리턴: int -->
+  <update id="update_visible" parameterType="ItemVO">
+    UPDATE itemno
+    SET item_visible=#{item_visible}
+    WHERE itemno = #{itemno}
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+</mapper>

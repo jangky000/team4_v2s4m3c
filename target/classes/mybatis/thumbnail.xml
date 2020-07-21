@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.thumbnail.ThumbnailDAOInter"> 
+  <insert id="create" parameterType="ThumbnailVO">
+    INSERT INTO thumbnail(thumbno, itemno, fname, fupname, thumb, fsize, rdate)
+    VALUES(thumb_seq.nextval, #{itemno}, #{fname}, #{fupname}, #{thumb}, #{fsize}, sysdate)
+  </insert>
+  
+  <select id="list" resultType="ThumbnailVO">
+    SELECT thumbno, itemno, fname, fupname, thumb, fsize, rdate
+    FROM thumbnail
+    ORDER BY itemno DESC,  thumbno ASC
+  </select>
+  
+  <delete id="delete" parameterType="int">
+    DELETE FROM thumbnail
+    WHERE thumbno = #{thumbno}
+  </delete>
+
+</mapper>
