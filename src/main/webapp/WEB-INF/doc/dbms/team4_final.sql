@@ -1128,7 +1128,6 @@ VALUES(delivery_seq.nextval, 'SKINFIT', 1, 1, '아로미', sysdate, 'S');
 INSERT INTO delivery(trackingno, porder_company, porderno, porder_detailno, dman, delivery_date, status)
 VALUES(delivery_seq.nextval, 'SKINFIT', 1, 1, '투투', sysdate, 'S');
 
-COMMIT;
 
 
 
