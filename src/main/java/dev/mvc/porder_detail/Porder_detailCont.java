@@ -3,6 +3,8 @@ package dev.mvc.porder_detail;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import dev.mvc.porder.PorderProcInter;
 import dev.mvc.porder.PorderVO;
+import dev.mvc.porder.Porder_detail_itemVO;
 
 
 @Controller
@@ -106,12 +109,13 @@ public class Porder_detailCont {
 	 * @return
 	 */
 	@RequestMapping(value="/delivery/list_seller.do", method=RequestMethod.GET )
-	public ModelAndView list_seller() {
+	public ModelAndView list_seller(HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 
 		// 멤버 N
 		// 이름, 연락처
-
+		//int memno = (Integer)session.getAttribute("memno");
+		int memno = 1;
 		// 주문 테이블 N 
 		// 주문번호, 배송지, 결제일
 
@@ -119,13 +123,14 @@ public class Porder_detailCont {
 		// 상품 이름, 상품, 재고
 
 		// 주문 상세 테이블 N * M
-		// 상품, 수량, 
-
+		// 상품, 수량
+		List<Porder_detail_itemVO> join_list = this.porderProc.list_join_porder_detail_item(memno);
+		mav.addObject("list", join_list);
 		List<PorderVO> porder_list = this.porderProc.list();
 		mav.addObject("porder_cnt", porder_list.size());
 		List<Porder_detailVO> detail_list = this.porder_detailProc.list();
 		mav.addObject("detail_cnt", detail_list.size());
-		mav.addObject("list", detail_list);
+		//mav.addObject("list", detail_list);
 
 		// REST 배송테이블 정보
 		// 배송상태, 최종 처리일

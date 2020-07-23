@@ -205,29 +205,30 @@ table td.td-th {
               <th>배송지</th>
               <td colspan="9">서울특별시 강남구</td>
             </tr> -->
-						<c:forEach var="porder_detailVO" items="${list }">
-							<c:set var="porder_detailno"
-								value="${porder_detailVO.porder_detailno }" />
-							<c:set var="porderno" value="${porder_detailVO.porderno }" />
-							<c:set var="itemno" value="${porder_detailVO.itemno }" />
-							<c:set var="quantity" value="${porder_detailVO.quantity }" />
-							<c:set var="item_price_sum"
-								value="${porder_detailVO.item_price_sum }" />
-							<c:set var="item_discount_sum"
-								value="${porder_detailVO.item_discount_sum }" />
-							<c:set var="payment_price"
-								value="${porder_detailVO.payment_price }" />
-							<c:set var="porder_detail_status"
-								value="${porder_detailVO.porder_detail_status }" />
-							<c:set var="trackingno" value="${porder_detailVO.trackingno }" />
+						<c:forEach var="vo" items="${list }">
+							<c:set var="porder_detailno" value="${vo.porder_detailVO.porder_detailno }" />
+							<c:set var="porderno" value="${vo.porder_detailVO.porderno }" />
+							<c:set var="itemno" value="${vo.porder_detailVO.itemno }" />
+							<c:set var="quantity" value="${vo.porder_detailVO.quantity }" />
+							<c:set var="item_price_sum" value="${vo.porder_detailVO.item_price_sum }" />
+							<c:set var="item_discount_sum" value="${vo.porder_detailVO.item_discount_sum }" />
+							<c:set var="payment_price" value="${vo.porder_detailVO.payment_price }" />
+							<c:set var="porder_detail_status" value="${vo.porder_detailVO.porder_detail_status }" />
+							<c:set var="trackingno" value="${vo.porder_detailVO.trackingno }" />
+							
+							<c:set var="item_stock" value="${vo.itemVO.item_stock }"/>
+							<c:set var="item_name" value="${vo.itemVO.item_name }"/>
+							
+							<c:set var="porder_address" value="${vo.porderVO.porder_address }"/>
+							<c:set var="rdate" value="${vo.porderVO.rdate }"/>
 
 							<tr style="text-align: center;">
 								<td id="div_btn_dlv_${porder_detailno }"><button type="button" class="btn_delivery_rest_create"
 										data-porder_company="skinfit" data-porderno="${porderno}"
 										data-porder_detailno="${porder_detailno }">배송등록</button></td>
 								<td>#${porderno }-${porder_detailno }</td>
-								<td>2020-06-16</td>
-								<td>100</td>
+								<td>${rdate }</td>
+								<td>${item_stock}</td>
 								<td><span id="trackinginfo-${porder_detailno }"> <c:choose>
 											<c:when test="${trackingno==null or trackingno==-1 }">
 												<%-- <input type="text" name='trackingno' value='' placeholder="운송장번호" style="width: 100px;"><button type="button" class='btn_trackingno' name='${porder_detailno }'>등록</button> --%>
@@ -264,7 +265,7 @@ table td.td-th {
 											</c:otherwise>
 										</c:choose>
 								</span></td>
-								<td><span id="dman-${porder_detailno}">왕눈이</span></td>
+								<td>왕눈이</td>
 								<td>010-1234-1234</td>
 								<td><span id="status-${porder_detailno}">준비중</span></td>
 								<td><span id="delivery_date-${porder_detailno}"></span></td>
@@ -272,11 +273,11 @@ table td.td-th {
 							</tr>
 							<tr>
 								<td class='td-th'>상품명(수량)</td>
-								<td colspan="9">상품번호${porder_detailno } (${quantity }개)</td>
+								<td colspan="9">${item_name } (${quantity }개)</td>
 							</tr>
 							<tr>
 								<td class='td-th'>배송지</td>
-								<td colspan="9">서울특별시 강남구</td>
+								<td colspan="9">${porder_address }</td>
 							</tr>
 
 						</c:forEach>
@@ -433,7 +434,6 @@ table td.td-th {
       $('#div_btn_dlv_' + delivery_list[i].porder_detailno).html('');
       $('#trackinginfo-' + delivery_list[i].porder_detailno).html('#'+delivery_list[i].trackingno);
       $('#status-' + delivery_list[i].porder_detailno).html(delivery_list[i].status);
-      $('#dman-' + delivery_list[i].porder_detailno).html(delivery_list[i].dman);
       $('#delivery_date-' + delivery_list[i].porder_detailno).html(delivery_list[i].delivery_date);
 
     }

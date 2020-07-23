@@ -48,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result column="ititemno" property="itemno"/>
         <result column="itgrpno" property="grpno"/>
         <result column="ititem_name" property="item_name"/>
+        <result column="ititem_stock" property="item_stock"/>
         <result column="ititem_price" property="item_price"/>
         <result column="itdiscount_rate" property="discount_rate"/>
         <result column="ititem_type" property="item_type"/>
@@ -61,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   <select id="list_join_porder_detail_item" resultMap="Porder_detail_itemVO_Map" parameterType="int">
     SELECT p.porderno as pporderno, p.memno as pmemno, p.rdate as prdate, p.payment_price as ppayment_price, p.porder_status as pporder_status, p.porder_zip_code as pporder_zip_code, p.porder_address as pporder_address, p.porder_delivery_request as pporder_delivery_request,
                 pd.porder_detailno as pdporder_detailno, pd.porderno as pdporderno, pd.itemno as pditemno, pd.quantity as pdquantity, pd.payment_price as pdpayment_price, pd.porder_detail_status as pdporder_detail_status, pd.trackingno as pdtrackingno,
-                it.itemno as ititemno, it.grpno as itgrpno, it.item_name as ititem_name, it.item_price as ititem_price, it.discount_rate as itdiscount_rate, it.item_type as ititem_type, it.item_origin as ititem_origin, it.thumb as itthumb
+                it.itemno as ititemno, it.grpno as itgrpno, it.item_name as ititem_name, it.item_stock as ititem_stock, it.item_price as ititem_price, it.discount_rate as itdiscount_rate, it.item_type as ititem_type, it.item_origin as ititem_origin, it.thumb as itthumb
     FROM porder p, porder_detail pd, item it
     WHERE memno=#{memno} AND p.porderno = pd.porderno AND pd.itemno = it.itemno
     ORDER BY p.porderno DESC, pd.porder_detailno DESC
