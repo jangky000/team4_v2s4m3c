@@ -22,8 +22,18 @@
   
   <script type="text/javascript">
   $(function(){
- 
+    $('#btn_shop').on('click', create_shop);
   });
+
+  function create_shop(){
+    sw = confirm('장바구니로 이동하시겠습니까?'); 
+    if(sw == true){
+      var frm = $('#frm');
+      frm.submit();
+    } else {
+      //
+    }
+  }
   </script>
   <style>
   body {
@@ -100,10 +110,13 @@
     <div class='item_div'>상품 재고: ${itemVO.item_stock }</div>
     <div class='item_div'>원산지: ${itemVO.item_origin }</div>
     <div class='item_div'>수량
+    <form id='frm' name='frm' method='POST' action='../shopping_cart/create.do'>
+      <input type='hidden' name='itemno' value='${param.itemno }'>
       <input type='number' name='quantity' value='' required="required" 
                   placeholder="2" min="1" max="50" step="1" 
                   style='width: 10%;' class="form-control" >
-      <span><button>결제</button></span></div>
+     </form>
+      <span><button type="button" id="btn_shop">장바구니 등록</button></span></div>
     <a href="#">진행중인 이벤트가 궁금하다면 ?</a>
     <a href="#">진행중인 이벤트가 궁금하다면 ?</a>
   </div>
